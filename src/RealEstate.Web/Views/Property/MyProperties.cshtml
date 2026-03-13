@@ -1,0 +1,53 @@
+@model IReadOnlyCollection<PropertyListItemViewModel>
+@{
+    ViewData["Title"] = "Mes biens";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="section-title mb-0">Mes biens</h1>
+    <a asp-action="Create" class="btn btn-gold">Creer un bien</a>
+</div>
+
+@if (Model.Any())
+{
+    <div class="table-shell">
+        <table class="table align-middle">
+            <thead><tr><th>Titre</th><th>Ville</th><th>Prix</th><th>Statut</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var property in Model)
+            {
+                var tone = property.Status switch
+                {
+                    RealEstate.Domain.Enums.PropertyStatus.Published => "published",
+                    RealEstate.Domain.Enums.PropertyStatus.Rented => "published",
+                    RealEstate.Domain.Enums.PropertyStatus.Suspended => "archived",
+                    RealEstate.Domain.Enums.PropertyStatus.Archived => "archived",
+                    _ => "draft"
+                };
+
+                <tr>
+                    <td>@property.Title</td>
+                    <td>@property.City</td>
+                    <td>@property.Price.ToString("N0") EUR</td>
+                    <td>
+                        <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = property.Status.ToString(), Tone = tone }' />
+                    </td>
+                    <td class="table-actions">
+                        <div class="d-flex flex-wrap gap-2 justify-content-end">
+                            <a asp-action="Edit" asp-route-id="@property.Id" class="btn btn-sm btn-outline-dark">Modifier</a>
+                            <form asp-action="Publish" asp-route-id="@property.Id" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-dark">Publier</button></form>
+                            <form asp-action="Archive" asp-route-id="@property.Id" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger">Archiver</button></form>
+                            <form asp-action="MarkAsRented" asp-route-id="@property.Id" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-gold">Loue</button></form>
+                            <form asp-action="Restore" asp-route-id="@property.Id" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-dark">Restaurer</button></form>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucun bien pour le moment", Message = "Commencez par publier votre premier bien immobilier.", ActionText = "Creer un bien", ActionUrl = Url.Action("Create", "Property") }' />
+}

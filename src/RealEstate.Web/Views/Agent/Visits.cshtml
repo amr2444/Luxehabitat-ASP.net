@@ -1,0 +1,83 @@
+@model IReadOnlyCollection<AgentVisitListItemViewModel>
+@{
+    ViewData["Title"] = "Visites";
+}
+
+<h1 class="section-title mb-4">Visites planifiees</h1>
+
+@if (Model.Any())
+{
+    <div class="table-shell">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Bien</th>
+                    <th>Contact</th>
+                    <th>Date</th>
+                    <th>Notes</th>
+                    <th>Statut</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var tone = item.Status switch
+                    {
+                        RealEstate.Domain.Enums.VisitAppointmentStatus.Confirmed => "published",
+                        RealEstate.Domain.Enums.VisitAppointmentStatus.Completed => "published",
+                        RealEstate.Domain.Enums.VisitAppointmentStatus.Pending => "draft",
+                        _ => "archived"
+                    };
+
+                    <tr>
+                        <td>@item.PropertyTitle</td>
+                        <td>@item.CounterpartyName</td>
+                        <td>@item.ScheduledAtUtc.ToLocalTime().ToString("g")</td>
+                        <td class="text-muted">@(string.IsNullOrWhiteSpace(item.Notes) ? "Aucune note" : item.Notes)</td>
+                        <td>
+                            <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = item.Status.ToString(), Tone = tone }' />
+                        </td>
+                        <td class="table-actions">
+                            <div class="d-flex flex-column gap-2">
+                                @if (item.Status == RealEstate.Domain.Enums.VisitAppointmentStatus.Pending)
+                                {
+                                    <div class="d-flex gap-2">
+                                        <form asp-action="ConfirmVisit" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="visitId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-sm btn-dark">Confirmer</button>
+                                        </form>
+                                        <form asp-action="RejectVisit" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="visitId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Refuser</button>
+                                        </form>
+                                    </div>
+                                }
+                                @if (item.Status == RealEstate.Domain.Enums.VisitAppointmentStatus.Confirmed)
+                                {
+                                    <form asp-action="CompleteVisit" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="visitId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-gold">Marquer terminee</button>
+                                    </form>
+                                }
+                                <form asp-action="RescheduleVisit" method="post" class="d-flex gap-2 align-items-center">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="VisitId" value="@item.Id" />
+                                    <input type="datetime-local" name="ScheduledAtUtc" class="form-control form-control-sm" value="@item.ScheduledAtUtc.ToLocalTime().ToString("yyyy-MM-ddTHH:mm")" />
+                                    <button type="submit" class="btn btn-sm btn-outline-dark">Reprogrammer</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucune visite", Message = "Les visites confirmees ou en attente apparaitront ici." }' />
+}

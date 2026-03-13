@@ -1,0 +1,42 @@
+@model IReadOnlyCollection<FavoriteListItemViewModel>
+@{
+    ViewData["Title"] = "Favoris";
+}
+
+<h1 class="section-title mb-4">Mes favoris</h1>
+
+@if (Model.Any())
+{
+    <div class="property-grid">
+        @foreach (var item in Model)
+        {
+            <article class="property-card">
+                @if (!string.IsNullOrWhiteSpace(item.CoverImageUrl))
+                {
+                    <img src="@item.CoverImageUrl" alt="@item.PropertyTitle" class="property-image" />
+                }
+                else
+                {
+                    <div class="property-media"></div>
+                }
+                <div class="property-card-body">
+                    <h2 class="h5">@item.PropertyTitle</h2>
+                    <div class="property-price mb-2">@item.Price.ToString("N0") EUR</div>
+                    <p class="property-meta">@item.City</p>
+                    <div class="d-flex gap-2">
+                        <a asp-controller="Property" asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-dark flex-fill">Voir</a>
+                        <form asp-action="RemoveFavorite" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="propertyId" value="@item.PropertyId" />
+                            <button class="btn btn-outline-danger">Retirer</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+}
+else
+{
+    <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucun favori", Message = "Ajoutez des biens a vos favoris depuis la fiche detail.", ActionText = "Explorer les biens", ActionUrl = Url.Action("Index", "Property") }' />
+}

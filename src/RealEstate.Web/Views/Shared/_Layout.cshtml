@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+@{
+    var displayName = User.Identity?.Name ?? "Compte";
+    var avatarLetter = string.IsNullOrWhiteSpace(displayName) ? "L" : displayName[..1].ToUpperInvariant();
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LuxeHabitat</title>
+    <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/RealEstate.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <a href="#mainContent" class="visually-hidden-focusable">Aller au contenu principal</a>
+
+    <header class="site-header" id="siteHeader">
+        <nav class="navbar navbar-expand-xl navbar-dark site-nav">
+            <div class="site-nav__inner">
+                <div class="site-nav__brand">
+                    <a class="navbar-brand brand-mark" asp-controller="Home" asp-action="Index">LuxeHabitat</a>
+                </div>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Basculer la navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <div class="site-nav__content">
+                        <ul class="navbar-nav site-nav__links">
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Accueil</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Property" asp-action="Index">Rechercher un bien</a></li>
+
+                            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Agent"))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Agent">Dashboard</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Property" asp-action="MyProperties">Mes biens</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Property" asp-action="Create">Creer un bien</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Agent" asp-action="Inquiries">Demandes</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Agent" asp-action="Visits">Visites</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Agent" asp-action="Applications">Candidatures</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Agent" asp-action="Profile">Profil</a></li>
+                            }
+
+                            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Tenant"))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Tenant">Dashboard</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Favorites">Favoris</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Inquiries">Mes demandes</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Visits">Mes visites</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Applications">Mes candidatures</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Profile">Profil</a></li>
+                            }
+
+                            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Users">Utilisateurs</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Agents">Agents</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Properties">Annonces</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Reviews">Avis</a></li>
+                            }
+                        </ul>
+
+                        <div class="site-nav__actions">
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <div id="notification-panel-root" class="notification-shell" data-refresh-url="@Url.Action("Panel", "Notification")">
+                                    @await Component.InvokeAsync("NotificationPanel")
+                                </div>
+
+                                <details class="account-menu">
+                                    <summary class="account-menu__trigger">
+                                        <span class="account-menu__avatar">@avatarLetter</span>
+                                        <span class="account-menu__copy">
+                                            <span class="account-menu__label">Compte</span>
+                                            <span class="account-menu__value">@displayName</span>
+                                        </span>
+                                    </summary>
+                                    <div class="account-menu__panel">
+                                        <div class="account-menu__label mb-2">Session active</div>
+                                        <div class="mb-3">@displayName</div>
+                                        <div class="d-grid gap-2">
+                                            @if (User.IsInRole("Agent"))
+                                            {
+                                                <a asp-controller="Agent" asp-action="Profile" class="btn btn-outline-light">Mon profil</a>
+                                            }
+                                            @if (User.IsInRole("Tenant"))
+                                            {
+                                                <a asp-controller="Tenant" asp-action="Profile" class="btn btn-outline-light">Mon profil</a>
+                                            }
+                                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-gold w-100">Deconnexion</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </details>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light">Connexion</a>
+                                <a asp-controller="Account" asp-action="Register" class="btn btn-gold">Inscription</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="mainContent" class="page-shell">
+        <div class="page-alerts">
+            @if (TempData["SuccessMessage"] is string successMessage)
+            {
+                <div class="alert alert-success border-0">@successMessage</div>
+            }
+            @if (TempData["ErrorMessage"] is string errorMessage)
+            {
+                <div class="alert alert-danger border-0">@errorMessage</div>
+            }
+        </div>
+
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer" id="siteFooter">
+        <div class="site-footer__brand-strip">
+            <div class="site-footer__brand-copy">
+                <div class="brand-mark site-footer__brand-mark">LuxeHabitat</div>
+                <div class="site-footer__brand-line"></div>
+                <p class="site-footer__copy mb-0">
+                    Une plateforme immobiliere editoriale pour publier, decouvrir
+                    et convertir des biens d'exception avec une experience digitale
+                    haut de gamme.
+                </p>
+            </div>
+            <div class="site-footer__watermark">LUXE</div>
+        </div>
+
+        <div class="site-footer__columns">
+            <div class="site-footer__column">
+                <div class="site-footer__heading">Navigation</div>
+                <div class="site-footer__nav-list">
+                    <a asp-controller="Home" asp-action="Index" class="site-footer__nav-link">Accueil</a>
+                    <a asp-controller="Property" asp-action="Index" class="site-footer__nav-link">Rechercher un bien</a>
+                    <a asp-controller="Property" asp-action="Create" class="site-footer__nav-link">Creer un bien</a>
+                    <a asp-controller="Dashboard" asp-action="Index" class="site-footer__nav-link">Dashboard</a>
+                    <a asp-controller="Property" asp-action="MyProperties" class="site-footer__nav-link">Mes biens</a>
+                </div>
+            </div>
+
+            <div class="site-footer__column">
+                <div class="site-footer__heading">Espaces</div>
+                <div class="site-footer__nav-list">
+                    <a asp-controller="Agent" asp-action="Profile" class="site-footer__nav-link">Agents verifies</a>
+                    <a asp-controller="Tenant" asp-action="Profile" class="site-footer__nav-link">Locataires</a>
+                    <a asp-controller="Home" asp-action="Admins" class="site-footer__nav-link">Administrateurs</a>
+                    <a asp-controller="Tenant" asp-action="Applications" class="site-footer__nav-link">Candidatures</a>
+                    <a asp-controller="Agent" asp-action="Visits" class="site-footer__nav-link">Visites planifiees</a>
+                </div>
+            </div>
+
+            <div class="site-footer__column">
+                <div class="site-footer__heading">Contact</div>
+                <div class="site-footer__contact-list">
+                    <div class="site-footer__contact-item">
+                        <div class="site-footer__contact-label">Emails</div>
+                        <a href="mailto:elbellaouiamr75@gmail.com" class="site-footer__contact-value site-footer__contact-link">elbellaouiamr75@gmail.com</a>
+                        <div class="site-footer__contact-separator"></div>
+                        <a href="mailto:bellouanasayoub@gmail.com" class="site-footer__contact-value site-footer__contact-link site-footer__contact-link--spaced">bellouanasayoub@gmail.com</a>
+                    </div>
+                    <div class="site-footer__contact-item">
+                        <div class="site-footer__contact-label">Telephone</div>
+                        <div class="site-footer__contact-value">+212 06 71 92 00 00</div>
+                    </div>
+                    <div class="site-footer__contact-item">
+                        <div class="site-footer__contact-label">Siege</div>
+                        <div class="site-footer__contact-value">Casablanca, Maroc</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="site-footer__column">
+                <div class="site-footer__heading">Restez informe</div>
+                <p class="site-footer__newsletter-copy">Recevez les biens d'exception en avant-premiere.</p>
+                <form class="site-footer__newsletter" action="#" method="post">
+                    <input type="email" class="site-footer__newsletter-input" placeholder="Votre adresse e-mail" aria-label="Votre adresse e-mail" />
+                    <button type="submit" class="site-footer__newsletter-button">S'inscrire</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="site-footer__bottom">
+            <div class="site-footer__bottom-copy">© 2025 LuxeHabitat. Tous droits reserves.</div>
+
+            <div class="site-footer__legal">
+                <a href="#">Mentions legales</a>
+                <span>·</span>
+                <a href="#">Confidentialite</a>
+                <span>·</span>
+                <a href="#">CGU</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

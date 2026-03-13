@@ -1,0 +1,68 @@
+@model IReadOnlyCollection<AgentApplicationListItemViewModel>
+@{
+    ViewData["Title"] = "Candidatures";
+}
+
+<h1 class="section-title mb-4">Candidatures locatives</h1>
+
+@if (Model.Any())
+{
+    <div class="table-shell">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Bien</th>
+                    <th>Statut</th>
+                    <th>Entree souhaitee</th>
+                    <th>Soumise le</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var tone = item.Status switch
+                    {
+                        RealEstate.Domain.Enums.RentalApplicationStatus.Approved => "published",
+                        RealEstate.Domain.Enums.RentalApplicationStatus.Rejected => "archived",
+                        RealEstate.Domain.Enums.RentalApplicationStatus.Withdrawn => "archived",
+                        _ => "draft"
+                    };
+
+                    <tr>
+                        <td>@item.PropertyTitle</td>
+                        <td>
+                            <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = item.Status.ToString(), Tone = tone }' />
+                        </td>
+                        <td>@item.RequestedMoveInDateUtc?.ToString("d")</td>
+                        <td>@item.SubmittedAtUtc?.ToLocalTime().ToString("g")</td>
+                        <td class="table-actions">
+                            <form asp-action="UpdateApplicationStatus" method="post" class="d-flex gap-2 align-items-center">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="ApplicationId" value="@item.Id" />
+                                <select name="Status" class="form-select form-select-sm">
+                                    @foreach (var status in Enum.GetValues<RealEstate.Domain.Enums.RentalApplicationStatus>())
+                                    {
+                                        if (status == item.Status)
+                                        {
+                                            <option value="@status" selected>@status</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@status">@status</option>
+                                        }
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-dark">Mettre a jour</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucune candidature", Message = "Les candidatures associees a vos biens apparaitront ici." }' />
+}

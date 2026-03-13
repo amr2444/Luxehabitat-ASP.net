@@ -1,0 +1,15 @@
+@model EditTenantProfileViewModel
+@{ ViewData["Title"] = "Profil locataire"; }
+<div class="form-card">
+    <h1 class="section-title mb-4">Profil locataire</h1>
+    <form method="post" class="row g-3">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-md-6"><label asp-for="Occupation" class="form-label"></label><input asp-for="Occupation" class="form-control" /></div>
+        <div class="col-md-3"><label asp-for="MonthlyIncome" class="form-label"></label><input asp-for="MonthlyIncome" class="form-control" /></div>
+        <div class="col-md-3"><label asp-for="PreferredBudgetMax" class="form-label"></label><input asp-for="PreferredBudgetMax" class="form-control" /></div>
+        <div class="col-md-3"><label asp-for="PreferredBudgetMin" class="form-label"></label><input asp-for="PreferredBudgetMin" class="form-control" /></div>
+        <div class="col-12"><button type="submit" class="btn btn-gold">Mettre a jour</button></div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

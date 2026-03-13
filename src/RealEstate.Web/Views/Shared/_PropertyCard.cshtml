@@ -1,0 +1,85 @@
+@model PropertyListItemViewModel
+@{
+    var statusTone = Model.Status switch
+    {
+        RealEstate.Domain.Enums.PropertyStatus.Draft => "draft",
+        RealEstate.Domain.Enums.PropertyStatus.Published => "published",
+        RealEstate.Domain.Enums.PropertyStatus.Archived => "archived",
+        RealEstate.Domain.Enums.PropertyStatus.Suspended => "suspended",
+        _ => "rejected"
+    };
+
+    var locationText = string.IsNullOrWhiteSpace(Model.District)
+        ? Model.City
+        : $"{Model.City} - {Model.District}";
+}
+
+<article class="property-card js-parallax-card">
+    <div class="property-card__media">
+        @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl))
+        {
+            <img src="@Model.CoverImageUrl" alt="@Model.Title" class="property-card__image js-parallax-image" />
+        }
+        else
+        {
+            <div class="property-card__placeholder"></div>
+        }
+
+        <div class="property-card__overlay">
+            <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = Model.Status.ToString(), Tone = statusTone }' />
+            <span class="property-card__location-chip">@locationText</span>
+        </div>
+    </div>
+
+    <div class="property-card__body">
+        <div class="property-card__meta-row">
+            <span class="property-card__type">@Model.ListingType · @Model.PropertyType</span>
+            <span class="property-card__location">@Model.PublishedAtUtc?.ToString("dd MMM yyyy")</span>
+        </div>
+
+        <div>
+            <h3 class="property-card__title">@Model.Title</h3>
+            <div class="property-card__price">@Model.Price.ToString("N0") EUR</div>
+        </div>
+
+        <div class="property-card__specs">
+            <div class="property-card__spec">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 12V7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5V12" />
+                    <path d="M2 12h20v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5Z" />
+                </svg>
+                <span>@Model.Bedrooms ch.</span>
+            </div>
+            <div class="property-card__spec">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M7 4v7" />
+                    <path d="M17 4v7" />
+                    <path d="M7 11h10" />
+                    <path d="M5 20V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14" />
+                </svg>
+                <span>@Model.Bathrooms sdb</span>
+            </div>
+            <div class="property-card__spec">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 5h14v14H5z" />
+                    <path d="M9 5v14" />
+                    <path d="M15 5v14" />
+                </svg>
+                <span>@Model.AreaSqm m2</span>
+            </div>
+        </div>
+
+        <div class="property-card__actions">
+            <a asp-controller="Property" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-gold">Voir le bien</a>
+            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Tenant"))
+            {
+                <form asp-controller="Property" asp-action="AddFavorite" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="propertyId" value="@Model.Id" />
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                    <button type="submit" class="btn btn-outline-light">Favori</button>
+                </form>
+            }
+        </div>
+    </div>
+</article>

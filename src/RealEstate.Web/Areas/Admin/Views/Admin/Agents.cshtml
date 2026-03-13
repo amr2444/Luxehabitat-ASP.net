@@ -1,0 +1,42 @@
+@model IReadOnlyCollection<RealEstate.Web.ViewModels.Dashboard.AdminAgentListItemViewModel>
+@{
+    ViewData["Title"] = "Agents";
+}
+
+<h1 class="section-title mb-4">Agents</h1>
+
+<div class="table-shell">
+    <table class="table align-middle">
+        <thead>
+            <tr><th>Agence</th><th>Licence</th><th>Statut</th><th>Biens</th><th>Avis</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.AgencyName</td>
+                    <td>@item.LicenseNumber</td>
+                    <td>
+                        <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = item.StatusLabel, Tone = item.IsApproved ? "published" : "draft" }' />
+                    </td>
+                    <td>@item.PropertiesCount</td>
+                    <td>@item.ReviewsCount</td>
+                    <td class="table-actions">
+                        <div class="d-flex gap-2">
+                            <form asp-action="ApproveAgent" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="agentProfileId" value="@item.AgentProfileId" />
+                                <button type="submit" class="btn btn-sm btn-dark">Approuver</button>
+                            </form>
+                            <form asp-action="SuspendAgent" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="agentProfileId" value="@item.AgentProfileId" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Suspendre</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

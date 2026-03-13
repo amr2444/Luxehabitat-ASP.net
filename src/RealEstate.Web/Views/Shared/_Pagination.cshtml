@@ -1,0 +1,21 @@
+@model RealEstate.Web.ViewModels.Shared.PaginationViewModel
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            @for (var page = 1; page <= Model.TotalPages; page++)
+            {
+                var routeValues = new Dictionary<string, string?>();
+                foreach (var key in Context.Request.Query.Keys)
+                {
+                    routeValues[key] = Context.Request.Query[key];
+                }
+                routeValues["PageNumber"] = page.ToString();
+
+                <li class="page-item @(page == Model.CurrentPage ? "active" : string.Empty)">
+                    <a class="page-link" asp-all-route-data="routeValues">@(page)</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

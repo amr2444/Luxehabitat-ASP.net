@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.log
+*.tmp
+*.cache
+src/RealEstate.Web/wwwroot/uploads/
+TestResults/

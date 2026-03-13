@@ -1,0 +1,8 @@
+@model IReadOnlyCollection<TenantApplicationListItemViewModel>
+@{ ViewData["Title"] = "Mes candidatures"; }
+<h1 class="section-title mb-4">Mes candidatures</h1>
+@if (Model.Any())
+{
+    <div class="table-shell"><table class="table align-middle"><thead><tr><th>Bien</th><th>Statut</th><th>Entree souhaitee</th><th>Soumise le</th></tr></thead><tbody>@foreach (var item in Model){<tr><td>@item.PropertyTitle</td><td>@item.Status</td><td>@item.RequestedMoveInDateUtc?.ToString("d")</td><td>@item.SubmittedAtUtc?.ToLocalTime().ToString("g")</td></tr>}</tbody></table></div>
+}
+else { <div class="empty-state"><h3 class="h5">Aucune candidature</h3><p class="mb-0">Les candidatures locatives soumises apparaitront ici.</p></div> }

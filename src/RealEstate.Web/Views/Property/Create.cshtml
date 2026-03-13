@@ -1,0 +1,10 @@
+@model CreatePropertyViewModel
+@{ ViewData["Title"] = "Creer un bien"; }
+<div class="form-card">
+    <h1 class="section-title mb-4">Creer un bien</h1>
+    <partial name="_PropertyForm" model="Model" />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

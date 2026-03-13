@@ -1,0 +1,130 @@
+@model PropertySearchPageViewModel
+@{
+    ViewData["Title"] = "Recherche de biens";
+    var resultsCount = Model.Properties.Count;
+}
+
+<section class="page-section page-section--tight property-results">
+    <div class="section-heading">
+        <div>
+            <div class="section-heading__eyebrow">Catalogue editorial</div>
+            <h1 class="section-title">Biens disponibles</h1>
+        </div>
+        <div class="section-copy">@resultsCount resultat(s) dans votre selection</div>
+    </div>
+
+    <div class="property-results__layout">
+        <aside class="filter-sidebar">
+            <form method="get" class="d-grid gap-3">
+                <details open class="filter-sidebar__section">
+                    <summary>Localisation</summary>
+                    <div class="d-grid gap-3">
+                        <div>
+                            <label asp-for="Filter.CityId" class="form-label">Ville</label>
+                            <select asp-for="Filter.CityId" class="form-select">
+                                <option value="">Toutes les villes</option>
+                                @foreach (var city in Model.Filter.Cities)
+                                {
+                                    <option value="@city.Id">@city.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label asp-for="Filter.DistrictId" class="form-label">Quartier</label>
+                            <select asp-for="Filter.DistrictId" class="form-select">
+                                <option value="">Tous les quartiers</option>
+                                @foreach (var district in Model.Filter.Districts)
+                                {
+                                    <option value="@district.Id">@district.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </details>
+
+                <details open class="filter-sidebar__section">
+                    <summary>Budget</summary>
+                    <div class="d-grid gap-3">
+                        <div class="range-field">
+                            <div class="range-field__meta">
+                                <span>Prix minimum</span>
+                                <span>@((Model.Filter.MinPrice ?? 0).ToString("N0")) EUR</span>
+                            </div>
+                            <input asp-for="Filter.MinPrice" type="range" min="0" max="5000000" step="50000" />
+                        </div>
+                        <div class="range-field">
+                            <div class="range-field__meta">
+                                <span>Prix maximum</span>
+                                <span>@((Model.Filter.MaxPrice ?? 5000000).ToString("N0")) EUR</span>
+                            </div>
+                            <input asp-for="Filter.MaxPrice" type="range" min="100000" max="10000000" step="50000" />
+                        </div>
+                    </div>
+                </details>
+
+                <details open class="filter-sidebar__section">
+                    <summary>Caracteristiques</summary>
+                    <div class="d-grid gap-3">
+                        <div class="range-field">
+                            <div class="range-field__meta">
+                                <span>Chambres</span>
+                                <span>@(Model.Filter.Bedrooms ?? 0)+</span>
+                            </div>
+                            <input asp-for="Filter.Bedrooms" type="range" min="0" max="8" step="1" />
+                        </div>
+                        <div>
+                            <label asp-for="Filter.PropertyType" class="form-label">Type de bien</label>
+                            <select asp-for="Filter.PropertyType" asp-items="Html.GetEnumSelectList<RealEstate.Domain.Enums.PropertyType>()" class="form-select">
+                                <option value="">Tous les types</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label asp-for="Filter.ListingType" class="form-label">Transaction</label>
+                            <select asp-for="Filter.ListingType" asp-items="Html.GetEnumSelectList<RealEstate.Domain.Enums.ListingType>()" class="form-select">
+                                <option value="">Toutes</option>
+                            </select>
+                        </div>
+                    </div>
+                </details>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-gold" type="submit">Appliquer les filtres</button>
+                    <a asp-action="Index" class="btn btn-outline-light">Reinitialiser</a>
+                </div>
+            </form>
+        </aside>
+
+        <div>
+            @if (Model.Properties.Any())
+            {
+                <div class="property-results__masonry">
+                    @foreach (var property in Model.Properties)
+                    {
+                        <div class="property-results__item">
+                            <partial name="_PropertyCard" model="property" />
+                        </div>
+                    }
+                </div>
+                <partial name="_Pagination" model="Model.Pagination" />
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-state__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m21 21-4.35-4.35" />
+                            <circle cx="11" cy="11" r="6" />
+                            <path d="M8.5 11h5" />
+                        </svg>
+                    </div>
+                    <div class="empty-state__title">Aucun bien ne correspond a votre recherche</div>
+                    <p class="empty-state__copy">Ajustez vos filtres, elargissez la ville cible ou explorez toute la collection pour retrouver de nouvelles opportunites.</p>
+                    <div class="dashboard-actions justify-content-center">
+                        <a asp-action="Index" class="btn btn-outline-light">Effacer les filtres</a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-gold">Retour a l'accueil</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

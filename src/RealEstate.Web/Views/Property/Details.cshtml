@@ -1,0 +1,256 @@
+@model PropertyDetailsViewModel
+@{
+    ViewData["Title"] = Model.Title;
+    var locationLine = string.IsNullOrWhiteSpace(Model.District) ? Model.City : $"{Model.City} - {Model.District}";
+    var agentInitial = string.IsNullOrWhiteSpace(Model.AgentDisplayName) ? "A" : Model.AgentDisplayName[..1].ToUpperInvariant();
+}
+
+<section class="page-section page-section--tight">
+    <div class="property-detail">
+        <div class="detail-main">
+            <div class="detail-gallery">
+                @if (Model.Images.Any())
+                {
+                    <div class="detail-gallery__rail">
+                        @for (var i = 0; i < Model.Images.Count; i++)
+                        {
+                            var image = Model.Images.ElementAt(i);
+                            <div class="detail-gallery__item" id="gallery-image-@i">
+                                <img src="@image.ImageUrl" alt="@Model.Title" />
+                            </div>
+                        }
+                    </div>
+
+                    @if (Model.Images.Count > 1)
+                    {
+                        <div class="detail-gallery__dots">
+                            @for (var i = 0; i < Model.Images.Count; i++)
+                            {
+                                <a class="detail-gallery__dot" href="#gallery-image-@i" aria-label="Voir l'image @(i + 1)"></a>
+                            }
+                        </div>
+                        <div class="detail-gallery__thumbs">
+                            @for (var i = 0; i < Model.Images.Count; i++)
+                            {
+                                var image = Model.Images.ElementAt(i);
+                                <a class="detail-gallery__thumb" href="#gallery-image-@i" aria-label="Miniature @(i + 1)">
+                                    <img src="@image.ImageUrl" alt="@Model.Title" />
+                                </a>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <div class="empty-state__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />
+                                <path d="m8 14 2.5-2.5a1 1 0 0 1 1.4 0L16 15" />
+                                <path d="m16 13 1.5-1.5a1 1 0 0 1 1.4 0L21 14" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                            </svg>
+                        </div>
+                        <div class="empty-state__title">Galerie en preparation</div>
+                        <p class="empty-state__copy mb-0">L'agent n'a pas encore publie de visuels. Les informations detaillees du bien restent disponibles ci-dessous.</p>
+                    </div>
+                }
+            </div>
+
+            <article class="detail-card detail-content">
+                <div class="detail-content__header">
+                    <div>
+                        <div class="editorial-label mb-3">@locationLine</div>
+                        <h1 class="detail-content__title">@Model.Title</h1>
+                    </div>
+                    <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = Model.ListingType.ToString(), Tone = "draft" }' />
+                </div>
+
+                <p class="detail-copy mb-0">@Model.Description</p>
+
+                <div class="detail-spec-grid">
+                    <div class="detail-spec">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 12V7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5V12" />
+                            <path d="M2 12h20v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5Z" />
+                            <path d="M6 12v-1a2 2 0 0 1 2-2h2" />
+                        </svg>
+                        <div>
+                            <div class="detail-spec__label">Chambres</div>
+                            <div class="detail-spec__value">@Model.Bedrooms</div>
+                        </div>
+                    </div>
+                    <div class="detail-spec">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M7 7h10" />
+                            <path d="M7 12h10" />
+                            <path d="M9 17h6" />
+                            <path d="M5 3h14v18H5z" />
+                        </svg>
+                        <div>
+                            <div class="detail-spec__label">Surface</div>
+                            <div class="detail-spec__value">@Model.AreaSqm m2</div>
+                        </div>
+                    </div>
+                    <div class="detail-spec">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M7 4v7" />
+                            <path d="M17 4v7" />
+                            <path d="M7 11h10" />
+                            <path d="M5 20V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14" />
+                        </svg>
+                        <div>
+                            <div class="detail-spec__label">Salles d'eau</div>
+                            <div class="detail-spec__value">@Model.Bathrooms</div>
+                        </div>
+                    </div>
+                    <div class="detail-spec">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 3v18" />
+                            <path d="m7 8 5-5 5 5" />
+                            <path d="m17 16-5 5-5-5" />
+                        </svg>
+                        <div>
+                            <div class="detail-spec__label">Etage</div>
+                            <div class="detail-spec__value">@(Model.Floor?.ToString() ?? "N/A")</div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Amenities.Any())
+                {
+                    <div>
+                        <div class="editorial-label mb-3">Prestations</div>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var amenity in Model.Amenities)
+                            {
+                                <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = amenity, Tone = "archived" }' />
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="detail-map">
+                    <div>
+                        <div class="editorial-label mb-2">Adresse et environnement</div>
+                        <div class="h4 mb-2">@Model.AddressLine</div>
+                        <div>@Model.PostalCode @Model.City</div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <aside class="detail-sidebar">
+            <div class="detail-sidebar__panel">
+                <div class="editorial-label">Valeur de presentation</div>
+                <div class="detail-sidebar__price">@Model.Price.ToString("N0") EUR</div>
+                <div class="section-copy">Disponible @(Model.AvailableFromUtc.HasValue ? $"a partir du {Model.AvailableFromUtc.Value:dd/MM/yyyy}" : "immediatement")</div>
+                <div class="detail-sidebar__actions">
+                    <a href="#property-forms" class="btn btn-gold">Contacter l'agent</a>
+                    <a asp-controller="Property" asp-action="Index" class="btn btn-outline-light">Retour a la recherche</a>
+                </div>
+            </div>
+
+            <div class="agent-card">
+                <div class="agent-card__avatar">@agentInitial</div>
+                <div>
+                    <div class="editorial-label mb-1">Votre interlocuteur</div>
+                    <div class="h5 mb-1">@Model.AgentDisplayName</div>
+                    <div class="section-copy mb-0">Conseil, visite et accompagnement sur cette annonce.</div>
+                </div>
+            </div>
+
+            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Tenant"))
+            {
+                <div id="property-forms" class="detail-accordion">
+                    <div class="form-card p-3 mb-3">
+                        <form asp-action="AddFavorite" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="propertyId" value="@Model.Id" />
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                            <button class="btn btn-outline-light w-100" type="submit">Ajouter aux favoris</button>
+                        </form>
+                    </div>
+
+                    <details open>
+                        <summary>Demande d'information</summary>
+                        <div class="detail-accordion__body">
+                            <form asp-action="SendInquiry" method="post" class="row g-3">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="PropertyId" value="@Model.Id" />
+                                <div class="col-12">
+                                    <label class="form-label">Objet</label>
+                                    <input name="Subject" value="@Model.InquiryForm.Subject" class="form-control" />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Message</label>
+                                    <textarea name="Message" class="form-control" rows="4">@Model.InquiryForm.Message</textarea>
+                                </div>
+                                <div class="col-12"><button class="btn btn-gold w-100" type="submit">Envoyer la demande</button></div>
+                            </form>
+                        </div>
+                    </details>
+
+                    <details>
+                        <summary>Planifier une visite</summary>
+                        <div class="detail-accordion__body">
+                            <form asp-action="RequestVisit" method="post" class="row g-3">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="PropertyId" value="@Model.Id" />
+                                <div class="col-12">
+                                    <label class="form-label">Date souhaitee</label>
+                                    <input name="ScheduledAtUtc" value="@Model.VisitForm.ScheduledAtUtc.ToString("yyyy-MM-ddTHH:mm")" class="form-control" type="datetime-local" />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Note complementaire</label>
+                                    <textarea name="Notes" class="form-control" rows="3">@Model.VisitForm.Notes</textarea>
+                                </div>
+                                <div class="col-12"><button class="btn btn-outline-light w-100" type="submit">Planifier</button></div>
+                            </form>
+                        </div>
+                    </details>
+
+                    @if (Model.ListingType == RealEstate.Domain.Enums.ListingType.Rent)
+                    {
+                        <details>
+                            <summary>Soumettre une candidature</summary>
+                            <div class="detail-accordion__body">
+                                <form asp-action="Apply" method="post" class="row g-3">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="PropertyId" value="@Model.Id" />
+                                    <div class="col-12">
+                                        <label class="form-label">Message</label>
+                                        <textarea name="CoverLetter" class="form-control" rows="4" placeholder="Expliquez votre projet locatif">@Model.ApplicationForm.CoverLetter</textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Date d'entree souhaitee</label>
+                                        <input name="RequestedMoveInDateUtc" value="@Model.ApplicationForm.RequestedMoveInDateUtc?.ToString("yyyy-MM-dd")" class="form-control" type="date" />
+                                    </div>
+                                    <div class="col-12"><button class="btn btn-gold w-100" type="submit">Candidater</button></div>
+                                </form>
+                            </div>
+                        </details>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-state__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 2a5 5 0 0 1 5 5v2h1a2 2 0 0 1 2 2v9H4v-9a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5Z" />
+                            <path d="M9 9V7a3 3 0 0 1 6 0v2" />
+                        </svg>
+                    </div>
+                    <div class="empty-state__title">Connectez-vous pour interagir</div>
+                    <p class="empty-state__copy">Ajoutez ce bien en favoris, contactez l'agent ou demandez une visite depuis votre espace locataire.</p>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-gold">Connexion</a>
+                </div>
+            }
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

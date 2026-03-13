@@ -1,0 +1,84 @@
+@model AgentDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard agent";
+}
+
+<section class="page-section page-section--tight dashboard-shell">
+    <div class="section-heading">
+        <div>
+            <div class="section-heading__eyebrow">Pilotage agence</div>
+            <h1 class="section-title">Dashboard agent</h1>
+        </div>
+        <div class="dashboard-actions">
+            <a asp-controller="Property" asp-action="Create" class="btn btn-gold">Creer un bien</a>
+            <a asp-controller="Property" asp-action="MyProperties" class="btn btn-outline-light">Mes biens</a>
+        </div>
+    </div>
+
+    <div class="dashboard-kpis">
+        <article class="dashboard-kpi glass-card">
+            <div class="dashboard-kpi__trend">+ pipeline</div>
+            <div class="dashboard-kpi__value">@Model.TotalProperties</div>
+            <div class="metric-label">Biens sous gestion</div>
+        </article>
+        <article class="dashboard-kpi glass-card">
+            <div class="dashboard-kpi__trend">+ visibilite</div>
+            <div class="dashboard-kpi__value">@Model.PublishedProperties</div>
+            <div class="metric-label">Annonces publiees</div>
+        </article>
+        <article class="dashboard-kpi glass-card">
+            <div class="dashboard-kpi__trend">+ intention</div>
+            <div class="dashboard-kpi__value">@Model.PendingInquiries</div>
+            <div class="metric-label">Demandes en attente</div>
+        </article>
+        <article class="dashboard-kpi glass-card">
+            <div class="dashboard-kpi__trend">+ conversion</div>
+            <div class="dashboard-kpi__value">@Model.ActiveApplications</div>
+            <div class="metric-label">Candidatures actives</div>
+        </article>
+    </div>
+
+    <div class="dashboard-grid">
+        <article class="timeline">
+            <div class="editorial-label mb-3">Interactions recentes</div>
+            <h2 class="h3 mb-4">Demandes recues</h2>
+            @if (Model.RecentInquiries.Any())
+            {
+                <div class="timeline__list">
+                    @foreach (var item in Model.RecentInquiries)
+                    {
+                        <div class="timeline__item">
+                            <div class="timeline__title">@item.PropertyTitle</div>
+                            <div class="timeline__meta">@item.TenantDisplayName · @item.Subject</div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucune demande recente", Message = "Les prises de contact apparaitront ici des que de nouveaux leads arriveront." }' />
+            }
+        </article>
+
+        <article class="timeline">
+            <div class="editorial-label mb-3">Agenda premium</div>
+            <h2 class="h3 mb-4">Visites planifiees</h2>
+            @if (Model.ScheduledVisits.Any())
+            {
+                <div class="timeline__list">
+                    @foreach (var item in Model.ScheduledVisits)
+                    {
+                        <div class="timeline__item">
+                            <div class="timeline__title">@item.PropertyTitle</div>
+                            <div class="timeline__meta">@item.CounterpartyName · @item.ScheduledAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucune visite planifiee", Message = "Les visites confirmees ou reprogramees seront centralisees ici." }' />
+            }
+        </article>
+    </div>
+</section>

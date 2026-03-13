@@ -1,0 +1,84 @@
+@model TenantDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard locataire";
+}
+
+<section class="page-section page-section--tight dashboard-shell">
+    <div class="section-heading">
+        <div>
+            <div class="section-heading__eyebrow">Espace resident</div>
+            <h1 class="section-title">Dashboard locataire</h1>
+        </div>
+        <div class="dashboard-actions">
+            <a asp-controller="Property" asp-action="Index" class="btn btn-gold">Explorer les biens</a>
+            <a asp-controller="Tenant" asp-action="Favorites" class="btn btn-outline-light">Mes favoris</a>
+        </div>
+    </div>
+
+    <div class="dashboard-kpis">
+        <article class="dashboard-kpi glass-card">
+            <div class="dashboard-kpi__trend">+ desirabilite</div>
+            <div class="dashboard-kpi__value">@Model.FavoritesCount</div>
+            <div class="metric-label">Biens suivis</div>
+        </article>
+        <article class="dashboard-kpi glass-card">
+            <div class="dashboard-kpi__trend">+ planning</div>
+            <div class="dashboard-kpi__value">@Model.PendingVisitsCount</div>
+            <div class="metric-label">Visites en attente</div>
+        </article>
+        <article class="dashboard-kpi glass-card">
+            <div class="dashboard-kpi__trend">+ dossiers</div>
+            <div class="dashboard-kpi__value">@Model.ActiveApplicationsCount</div>
+            <div class="metric-label">Candidatures actives</div>
+        </article>
+        <article class="dashboard-kpi glass-card">
+            <div class="dashboard-kpi__trend">+ veille</div>
+            <div class="dashboard-kpi__value">@Model.UnreadNotificationsCount</div>
+            <div class="metric-label">Notifications non lues</div>
+        </article>
+    </div>
+
+    <div class="dashboard-grid">
+        <article class="timeline">
+            <div class="editorial-label mb-3">Collection personnelle</div>
+            <h2 class="h3 mb-4">Favoris recents</h2>
+            @if (Model.Favorites.Any())
+            {
+                <div class="timeline__list">
+                    @foreach (var item in Model.Favorites)
+                    {
+                        <div class="timeline__item">
+                            <div class="timeline__title">@item.PropertyTitle</div>
+                            <div class="timeline__meta">@item.City · @item.Price.ToString("N0") EUR</div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucun favori pour le moment", Message = "Ajoutez des biens a votre selection personnelle pour suivre leur evolution et gagner du temps." }' />
+            }
+        </article>
+
+        <article class="timeline">
+            <div class="editorial-label mb-3">Agenda prive</div>
+            <h2 class="h3 mb-4">Visites a venir</h2>
+            @if (Model.Visits.Any())
+            {
+                <div class="timeline__list">
+                    @foreach (var item in Model.Visits)
+                    {
+                        <div class="timeline__item">
+                            <div class="timeline__title">@item.PropertyTitle</div>
+                            <div class="timeline__meta">@item.CounterpartyName · @item.ScheduledAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucune visite planifiee", Message = "Les visites confirmees apparaitront ici pour garder une vision claire de vos prochaines etapes." }' />
+            }
+        </article>
+    </div>
+</section>

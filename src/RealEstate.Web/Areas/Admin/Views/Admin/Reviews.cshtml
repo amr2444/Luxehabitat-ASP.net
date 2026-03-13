@@ -1,0 +1,42 @@
+@model IReadOnlyCollection<RealEstate.Web.ViewModels.Dashboard.AdminReviewListItemViewModel>
+@{
+    ViewData["Title"] = "Avis";
+}
+
+<h1 class="section-title mb-4">Avis</h1>
+
+<div class="table-shell">
+    <table class="table align-middle">
+        <thead>
+            <tr><th>Bien</th><th>Agent</th><th>Note</th><th>Statut</th><th>Commentaire</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.PropertyTitle</td>
+                    <td>@item.AgentName</td>
+                    <td>@item.Rating/5</td>
+                    <td>
+                        <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = item.Status, Tone = item.Status == "Visible" ? "published" : "archived" }' />
+                    </td>
+                    <td class="text-muted">@item.Comment</td>
+                    <td class="table-actions">
+                        <div class="d-flex gap-2">
+                            <form asp-action="HideReview" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="reviewId" value="@item.ReviewId" />
+                                <button type="submit" class="btn btn-sm btn-outline-dark">Masquer</button>
+                            </form>
+                            <form asp-action="DeleteReview" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="reviewId" value="@item.ReviewId" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

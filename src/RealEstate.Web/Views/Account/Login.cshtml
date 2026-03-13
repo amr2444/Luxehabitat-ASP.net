@@ -1,0 +1,203 @@
+@using RealEstate.Web.ViewModels.Account
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Connexion";
+    var registerModel = new RegisterViewModel();
+}
+
+<div class="auth-stage auth-stage--cinematic" data-mode="login">
+    <div class="auth-panel auth-panel--form">
+        <div class="auth-panel__inner">
+            <div class="auth-form auth-form--login active">
+                <span class="auth-form__eyebrow">Connexion privee</span>
+                <h1>Accedez a votre espace LuxeHabitat.</h1>
+                <p class="auth-form__subtitle">
+                    Retrouvez vos biens, vos favoris, vos visites et vos candidatures dans une interface premium,
+                    sobre et parfaitement maitrisee.
+                </p>
+
+                <form asp-controller="Account" asp-action="Login" method="post" class="auth-form__body">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="ReturnUrl" type="hidden" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="auth-input-group">
+                        <label asp-for="Email">Adresse e-mail</label>
+                        <input asp-for="Email" placeholder="votre@email.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label asp-for="Password">Mot de passe</label>
+                        <input asp-for="Password" placeholder="Entrez votre mot de passe" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <label class="auth-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <span>Rester connecte sur cet appareil</span>
+                    </label>
+
+                    <button type="submit" class="auth-btn-primary">Se connecter</button>
+
+                    <div class="auth-form__footer">
+                        <span>Pas encore de compte ?</span>
+                        <a href="#" data-switch-to="register">Creer un compte</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="auth-form auth-form--register">
+                <span class="auth-form__eyebrow">Ouverture de compte</span>
+                <h1>Rejoignez une plateforme immobiliere editoriale.</h1>
+                <p class="auth-form__subtitle">
+                    Creez votre acces agent ou locataire dans un environnement luxueux, credible et entierement aligne
+                    avec l'univers LuxeHabitat.
+                </p>
+
+                <form asp-controller="Account" asp-action="Register" method="post" class="auth-form__body">
+                    @Html.AntiForgeryToken()
+
+                    <div class="auth-form__grid">
+                        <div class="auth-fields-row">
+                            <div class="auth-input-group">
+                                <label asp-for="@registerModel.FirstName">Prenom</label>
+                                <input asp-for="@registerModel.FirstName" placeholder="Votre prenom" />
+                            </div>
+
+                            <div class="auth-input-group">
+                                <label asp-for="@registerModel.LastName">Nom</label>
+                                <input asp-for="@registerModel.LastName" placeholder="Votre nom" />
+                            </div>
+                        </div>
+
+                        <div class="auth-input-group auth-fields-full">
+                            <label asp-for="@registerModel.Email">Adresse e-mail</label>
+                            <input asp-for="@registerModel.Email" placeholder="votre@email.com" />
+                        </div>
+
+                        <div class="auth-input-group auth-fields-full">
+                            <label asp-for="@registerModel.Role">Profil</label>
+                            <select asp-for="@registerModel.Role" class="form-select">
+                                <option value="Tenant">Locataire</option>
+                                <option value="Agent">Agent</option>
+                            </select>
+                        </div>
+
+                        <div class="auth-fields-row">
+                            <div class="auth-input-group">
+                                <label asp-for="@registerModel.Password">Mot de passe</label>
+                                <input asp-for="@registerModel.Password" placeholder="Choisissez un mot de passe" />
+                            </div>
+
+                            <div class="auth-input-group">
+                                <label asp-for="@registerModel.ConfirmPassword">Confirmation</label>
+                                <input asp-for="@registerModel.ConfirmPassword" placeholder="Confirmez votre mot de passe" />
+                            </div>
+                        </div>
+
+                        <div class="auth-input-group auth-fields-full">
+                            <label asp-for="@registerModel.AgencyName">Agence</label>
+                            <input asp-for="@registerModel.AgencyName" placeholder="Nom de l'agence si vous etes agent" />
+                        </div>
+
+                        <div class="auth-input-group auth-fields-full">
+                            <label asp-for="@registerModel.LicenseNumber">Licence</label>
+                            <input asp-for="@registerModel.LicenseNumber" placeholder="Reference professionnelle" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="auth-btn-primary">Creer mon compte</button>
+
+                    <div class="auth-form__footer">
+                        <span>Vous avez deja un compte ?</span>
+                        <a href="#" data-switch-to="login">Se connecter</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-panel auth-panel--image">
+        <div class="auth-image__overlay"></div>
+        <div class="auth-image__content">
+            <div class="auth-image__quote auth-image__quote--login active">
+                <span class="auth-image__eyebrow">Editorial access</span>
+                <h2>Retrouvez une experience plus proche d'un salon prive que d'un simple back-office.</h2>
+                <p>Chaque connexion redonne acces a une interface claire, immersive et pensee pour valoriser chaque interaction.</p>
+            </div>
+            <div class="auth-image__quote auth-image__quote--register">
+                <span class="auth-image__eyebrow">Curated onboarding</span>
+                <h2>Une arrivee plus inspiree, plus sereine et plus coherente avec l'univers LuxeHabitat.</h2>
+                <p>L'inscription adopte le meme langage premium que le reste de la plateforme, sans sacrifier la clarte du parcours.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-shimmer"></div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            const stage = document.querySelector('.auth-stage--cinematic');
+            const shimmer = document.querySelector('.auth-shimmer');
+            const imagePanel = document.querySelector('.auth-panel--image');
+
+            if (!stage || !shimmer || !imagePanel) {
+                return;
+            }
+
+            const syncActiveState = () => {
+                const mode = stage.dataset.mode;
+
+                document.querySelectorAll('.auth-form').forEach(form => {
+                    form.classList.toggle('active',
+                        (mode === 'login' && form.classList.contains('auth-form--login')) ||
+                        (mode === 'register' && form.classList.contains('auth-form--register')));
+                });
+
+                document.querySelectorAll('.auth-image__quote').forEach(quote => {
+                    quote.classList.toggle('active',
+                        (mode === 'login' && quote.classList.contains('auth-image__quote--login')) ||
+                        (mode === 'register' && quote.classList.contains('auth-image__quote--register')));
+                });
+            };
+
+            const switchMode = (targetMode) => {
+                const current = stage.dataset.mode;
+                if (current === targetMode) {
+                    return;
+                }
+
+                const goingRight = targetMode === 'register';
+
+                shimmer.classList.remove('auth-shimmer--ltr', 'auth-shimmer--rtl');
+                void shimmer.offsetWidth;
+                shimmer.classList.add(goingRight ? 'auth-shimmer--ltr' : 'auth-shimmer--rtl');
+                imagePanel.style.animationPlayState = 'paused';
+
+                window.setTimeout(() => {
+                    stage.dataset.mode = targetMode;
+                    syncActiveState();
+                }, 400);
+
+                window.setTimeout(() => {
+                    shimmer.classList.remove('auth-shimmer--ltr', 'auth-shimmer--rtl');
+                    imagePanel.style.animationPlayState = 'running';
+                }, 1000);
+            };
+
+            syncActiveState();
+
+            document.querySelectorAll('[data-switch-to]').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    switchMode(link.dataset.switchTo);
+                });
+            });
+        })();
+    </script>
+}

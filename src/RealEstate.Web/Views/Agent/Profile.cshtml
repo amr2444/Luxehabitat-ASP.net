@@ -1,0 +1,15 @@
+@model EditAgentProfileViewModel
+@{ ViewData["Title"] = "Profil agent"; }
+<div class="form-card">
+    <h1 class="section-title mb-4">Profil agent</h1>
+    <form method="post" class="row g-3">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-md-6"><label asp-for="AgencyName" class="form-label"></label><input asp-for="AgencyName" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="LicenseNumber" class="form-label"></label><input asp-for="LicenseNumber" class="form-control" /></div>
+        <div class="col-12"><label asp-for="Bio" class="form-label"></label><textarea asp-for="Bio" class="form-control" rows="5"></textarea></div>
+        <div class="col-md-3"><label asp-for="YearsOfExperience" class="form-label"></label><input asp-for="YearsOfExperience" class="form-control" /></div>
+        <div class="col-12"><button type="submit" class="btn btn-gold">Mettre a jour</button></div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

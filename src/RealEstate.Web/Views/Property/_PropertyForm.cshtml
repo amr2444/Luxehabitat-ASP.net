@@ -1,0 +1,149 @@
+@model PropertyFormViewModel
+<form method="post" enctype="multipart/form-data" class="row g-3">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+    <div class="col-12">
+        <div class="form-section">
+            <div class="form-section-title">Presentation du bien</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" placeholder="Ex. Appartement lumineux proche centre" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="PropertyType" class="form-label"></label>
+                    <select asp-for="PropertyType" asp-items="Html.GetEnumSelectList<RealEstate.Domain.Enums.PropertyType>()" class="form-select"></select>
+                    <span asp-validation-for="PropertyType" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="ListingType" class="form-label"></label>
+                    <select asp-for="ListingType" asp-items="Html.GetEnumSelectList<RealEstate.Domain.Enums.ListingType>()" class="form-select"></select>
+                    <span asp-validation-for="ListingType" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="6" placeholder="Decrivez les volumes, les points forts, l'environnement et la disponibilite."></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-section">
+            <div class="form-section-title">Localisation et disponibilite</div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="CityId" class="form-label">Ville</label>
+                    <select asp-for="CityId" class="form-select">
+                        <option value="">Selectionnez une ville</option>
+                        @foreach (var city in Model.Cities)
+                        {
+                            <option value="@city.Id">@city.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CityId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="DistrictName" class="form-label">Quartier</label>
+                    <input asp-for="DistrictName" class="form-control" placeholder="Ex. Bastille, Les Chartrons, Centre-ville..." />
+                    <div class="form-text">Saisissez librement le nom du quartier ou du secteur.</div>
+                    <span asp-validation-for="DistrictName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="AvailableFromUtc" class="form-label"></label>
+                    <input asp-for="AvailableFromUtc" class="form-control" type="date" />
+                    <span asp-validation-for="AvailableFromUtc" class="text-danger small"></span>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="AddressLine" class="form-label"></label>
+                    <input asp-for="AddressLine" class="form-control" placeholder="Adresse complete" />
+                    <span asp-validation-for="AddressLine" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PostalCode" class="form-label"></label>
+                    <input asp-for="PostalCode" class="form-control" />
+                    <span asp-validation-for="PostalCode" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-section">
+            <div class="form-section-title">Tarification et caracteristiques</div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="SecurityDeposit" class="form-label"></label>
+                    <input asp-for="SecurityDeposit" class="form-control" />
+                    <span asp-validation-for="SecurityDeposit" class="text-danger small"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="AreaSqm" class="form-label"></label>
+                    <input asp-for="AreaSqm" class="form-control" />
+                    <span asp-validation-for="AreaSqm" class="text-danger small"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="Bedrooms" class="form-label"></label>
+                    <input asp-for="Bedrooms" class="form-control" />
+                    <span asp-validation-for="Bedrooms" class="text-danger small"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="Bathrooms" class="form-label"></label>
+                    <input asp-for="Bathrooms" class="form-control" />
+                    <span asp-validation-for="Bathrooms" class="text-danger small"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="Floor" class="form-label"></label>
+                    <input asp-for="Floor" class="form-control" />
+                    <span asp-validation-for="Floor" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-section">
+            <div class="form-section-title">Medias</div>
+            <label asp-for="NewImages" class="form-label">Photos du bien</label>
+            <input asp-for="NewImages" class="form-control" type="file" accept=".jpg,.jpeg,.png,.webp" multiple />
+            <div class="form-text">Formats acceptes: JPG, PNG, WebP. Maximum 5 Mo par image.</div>
+            <span asp-validation-for="NewImages" class="text-danger small"></span>
+            @if (Model.ExistingImages.Any())
+            {
+                <div class="property-gallery-grid mt-3">
+                    @foreach (var image in Model.ExistingImages.OrderBy(x => x.DisplayOrder))
+                    {
+                        <div class="gallery-card">
+                            <img src="@image.ImageUrl" alt="Photo du bien" class="gallery-thumb" />
+                            <div class="gallery-card-actions">
+                                @if (Model is EditPropertyViewModel editModel)
+                                {
+                                    <form asp-controller="Property" asp-action="SetCoverImage" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="propertyId" value="@editModel.Id" />
+                                        <input type="hidden" name="imageId" value="@image.Id" />
+                                        <button type="submit" class="btn btn-sm @(image.IsCover ? "btn-gold" : "btn-outline-dark")">@(image.IsCover ? "Principale" : "Definir cover")</button>
+                                    </form>
+                                    <form asp-controller="Property" asp-action="DeleteImage" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="propertyId" value="@editModel.Id" />
+                                        <input type="hidden" name="imageId" value="@image.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-gold">Enregistrer</button>
+        <a asp-action="MyProperties" class="btn btn-outline-dark">Annuler</a>
+    </div>
+</form>

@@ -1,0 +1,117 @@
+@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "Plateforme immobiliere premium";
+}
+
+<section class="hero">
+    <div class="hero__background"></div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+        <div class="hero__grid">
+            <div class="hero__copy">
+                <div class="hero__eyebrow">Dark Luxury Editorial Real Estate</div>
+                <h1 class="hero__title" data-word-reveal>Des residences rares. Une experience digitale qui inspire la confiance.</h1>
+                <p>
+                    LuxeHabitat orchestre la publication, la recherche et la conversion de biens premium avec une presence visuelle
+                    plus proche d'un magazine de prestige que d'un simple portail immobilier.
+                </p>
+            </div>
+
+            <form asp-controller="Property" asp-action="Index" method="get" class="hero__search">
+                <div class="hero__search-grid">
+                    <div class="floating-field">
+                        <label asp-for="QuickSearch.CityId">Ville</label>
+                        <select asp-for="QuickSearch.CityId" class="form-select">
+                            <option value="">Selectionnez une ville</option>
+                            @foreach (var city in Model.QuickSearch.Cities)
+                            {
+                                <option value="@city.Id">@city.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="floating-field">
+                        <label asp-for="QuickSearch.MaxPrice">Budget max</label>
+                        <input asp-for="QuickSearch.MaxPrice" class="form-control" placeholder="Jusqu'a 2 500 000" />
+                    </div>
+                    <div class="floating-field">
+                        <label asp-for="QuickSearch.Bedrooms">Chambres</label>
+                        <input asp-for="QuickSearch.Bedrooms" class="form-control" placeholder="3 minimum" />
+                    </div>
+                    <button type="submit" class="btn btn-gold w-100">Explorer la collection</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="page-section featured-strip">
+    <div class="section-heading">
+        <div>
+            <div class="section-heading__eyebrow">Selection curatoriale</div>
+            <h2 class="section-title">Biens mis en avant</h2>
+        </div>
+        <a asp-controller="Property" asp-action="Index" class="btn btn-outline-light">Voir toute la collection</a>
+    </div>
+
+    @if (Model.FeaturedProperties.Any())
+    {
+        <div class="featured-grid">
+            @foreach (var property in Model.FeaturedProperties)
+            {
+                <partial name="_PropertyCard" model="property" />
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 11.5 12 4l9 7.5" />
+                    <path d="M5 10.5V20h14v-9.5" />
+                    <path d="M9 20v-5h6v5" />
+                </svg>
+            </div>
+            <div class="empty-state__title">Collection en cours de publication</div>
+            <p class="empty-state__copy mb-0">Les biens mis en avant apparaitront ici des que les agents auront publie leurs annonces premium.</p>
+        </div>
+    }
+</section>
+
+<section class="page-section page-section--tight">
+    <div class="feature-strip">
+        <article class="feature-strip__card">
+            <div class="feature-strip__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4Z" />
+                    <path d="m9.5 12 1.7 1.7L15 10" />
+                </svg>
+            </div>
+            <h3 class="feature-strip__title">Confiance instantanee</h3>
+            <p class="section-copy mb-0">Profils agents verifies, moderation structuree et details clairs pour inspirer une confiance immediate.</p>
+        </article>
+
+        <article class="feature-strip__card">
+            <div class="feature-strip__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 6h18" />
+                    <path d="M7 12h10" />
+                    <path d="M10 18h4" />
+                </svg>
+            </div>
+            <h3 class="feature-strip__title">Pilotage elegant</h3>
+            <p class="section-copy mb-0">Demandes, visites et candidatures sont organisees dans des parcours sobres, rapides et orientés conversion.</p>
+        </article>
+
+        <article class="feature-strip__card">
+            <div class="feature-strip__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3v18" />
+                    <path d="M5 8c0-2 2-3 4-3h4c2 0 4 1 4 3s-1 3-4 4l-2 1c-3 1-4 2-4 4s2 3 4 3h4c2 0 4-1 4-3" />
+                </svg>
+            </div>
+            <h3 class="feature-strip__title">Presentation qui valorise</h3>
+            <p class="section-copy mb-0">Un rendu editorial, immersif et premium qui fait monter la perception de valeur des annonces des le premier ecran.</p>
+        </article>
+    </div>
+</section>
