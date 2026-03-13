@@ -3,42 +3,63 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<h1 class="section-title mb-4">Admin Dashboard</h1>
-
-<div class="row g-4 mb-4">
-    <div class="col-md-6 col-xl-2"><partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.UsersCount.ToString(), Label = "Utilisateurs" }' /></div>
-    <div class="col-md-6 col-xl-2"><partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.AgentsCount.ToString(), Label = "Agents" }' /></div>
-    <div class="col-md-6 col-xl-2"><partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.ActiveAgentsCount.ToString(), Label = "Agents actifs" }' /></div>
-    <div class="col-md-6 col-xl-2"><partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.TenantCount.ToString(), Label = "Locataires" }' /></div>
-    <div class="col-md-6 col-xl-2"><partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.PropertiesCount.ToString(), Label = "Annonces" }' /></div>
-    <div class="col-md-6 col-xl-2"><partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.RentalsCount.ToString(), Label = "Locations" }' /></div>
-</div>
-
-<div class="admin-card">
-    <h2 class="h5 mb-3">Agents en attente</h2>
-    @if (Model.PendingAgents.Any())
-    {
-        <div class="table-shell">
-            <table class="table align-middle">
-                <thead>
-                    <tr><th>Agence</th><th>Licence</th><th>Biens</th><th>Avis</th></tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.PendingAgents)
-                    {
-                        <tr>
-                            <td>@item.AgencyName</td>
-                            <td>@item.LicenseNumber</td>
-                            <td>@item.PropertiesCount</td>
-                            <td>@item.ReviewsCount</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+<section class="admin-hub">
+    <div class="admin-hub__hero">
+        <div>
+            <span class="admin-hub__eyebrow">Back-office global</span>
+            <h1 class="section-title">Admin Dashboard</h1>
+            <p class="admin-hub__lead">
+                Surveillez l'activite de la plateforme, moderez les comptes sensibles et gardez une lecture
+                immediate des agents, locataires, annonces et locations.
+            </p>
         </div>
-    }
-    else
-    {
-        <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucun agent en attente", Message = "La moderation agent est a jour." }' />
-    }
-</div>
+    </div>
+
+    <div class="admin-metric-grid">
+        <partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.UsersCount.ToString(), Label = "Utilisateurs" }' />
+        <partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.AgentsCount.ToString(), Label = "Agents" }' />
+        <partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.ActiveAgentsCount.ToString(), Label = "Agents actifs" }' />
+        <partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.TenantCount.ToString(), Label = "Locataires" }' />
+        <partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.PropertiesCount.ToString(), Label = "Annonces" }' />
+        <partial name="_StatsCard" model='new RealEstate.Web.ViewModels.Shared.StatsCardViewModel { Value = Model.RentalsCount.ToString(), Label = "Locations" }' />
+    </div>
+
+    <section class="admin-panel">
+        <div class="admin-panel__header">
+            <div>
+                <span class="admin-panel__eyebrow">Validation</span>
+                <h2 class="admin-panel__title">Agents en attente</h2>
+            </div>
+            <p class="admin-panel__copy">Les profils ci-dessous demandent encore une validation administrateur.</p>
+        </div>
+
+        @if (Model.PendingAgents.Any())
+        {
+            <div class="table-shell admin-table-shell">
+                <table class="table align-middle admin-table">
+                    <thead>
+                        <tr><th>Agence</th><th>Licence</th><th>Biens</th><th>Avis</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PendingAgents)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="admin-table__primary">@item.AgencyName</div>
+                                    <div class="admin-table__secondary">Profil en attente</div>
+                                </td>
+                                <td>@item.LicenseNumber</td>
+                                <td>@item.PropertiesCount</td>
+                                <td>@item.ReviewsCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucun agent en attente", Message = "La moderation agent est a jour." }' />
+        }
+    </section>
+</section>

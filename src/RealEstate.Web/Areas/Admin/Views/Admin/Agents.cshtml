@@ -3,40 +3,63 @@
     ViewData["Title"] = "Agents";
 }
 
-<h1 class="section-title mb-4">Agents</h1>
+<section class="admin-hub">
+    <div class="admin-hub__hero admin-hub__hero--compact">
+        <div>
+            <span class="admin-hub__eyebrow">Moderation reseau</span>
+            <h1 class="section-title">Agents</h1>
+            <p class="admin-hub__lead">
+                Validez les profils professionnels, surveillez la qualite du portefeuille et gardez un controle net
+                sur les acteurs qui representent la plateforme.
+            </p>
+        </div>
+    </div>
 
-<div class="table-shell">
-    <table class="table align-middle">
-        <thead>
-            <tr><th>Agence</th><th>Licence</th><th>Statut</th><th>Biens</th><th>Avis</th><th></th></tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.AgencyName</td>
-                    <td>@item.LicenseNumber</td>
-                    <td>
-                        <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = item.StatusLabel, Tone = item.IsApproved ? "published" : "draft" }' />
-                    </td>
-                    <td>@item.PropertiesCount</td>
-                    <td>@item.ReviewsCount</td>
-                    <td class="table-actions">
-                        <div class="d-flex gap-2">
-                            <form asp-action="ApproveAgent" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="agentProfileId" value="@item.AgentProfileId" />
-                                <button type="submit" class="btn btn-sm btn-dark">Approuver</button>
-                            </form>
-                            <form asp-action="SuspendAgent" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="agentProfileId" value="@item.AgentProfileId" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Suspendre</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+    <section class="admin-panel">
+        @if (Model.Any())
+        {
+            <div class="table-shell admin-table-shell">
+                <table class="table align-middle admin-table">
+                    <thead>
+                        <tr><th>Agence</th><th>Licence</th><th>Statut</th><th>Biens</th><th>Avis</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="admin-table__primary">@item.AgencyName</div>
+                                    <div class="admin-table__secondary">Profil agent</div>
+                                </td>
+                                <td class="admin-table__muted">@item.LicenseNumber</td>
+                                <td>
+                                    <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = item.StatusLabel, Tone = item.IsApproved ? "published" : "draft" }' />
+                                </td>
+                                <td>@item.PropertiesCount</td>
+                                <td>@item.ReviewsCount</td>
+                                <td class="table-actions">
+                                    <div class="admin-action-row">
+                                        <form asp-action="ApproveAgent" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="agentProfileId" value="@item.AgentProfileId" />
+                                            <button type="submit" class="btn btn-sm btn-gold">Approuver</button>
+                                        </form>
+                                        <form asp-action="SuspendAgent" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="agentProfileId" value="@item.AgentProfileId" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Suspendre</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucun agent", Message = "Les profils agents moderes apparaitront ici." }' />
+        }
+    </section>
+</section>

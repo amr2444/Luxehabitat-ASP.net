@@ -12,15 +12,14 @@ public sealed class DashboardController(
     IAgentService agentService,
     ITenantService tenantService,
     IInquiryService inquiryService,
-    IVisitAppointmentService visitAppointmentService,
-    IAdminService adminService) : Controller
+    IVisitAppointmentService visitAppointmentService) : Controller
 {
     [HttpGet]
     public IActionResult Index()
     {
         if (User.IsInRole("Admin"))
         {
-            return RedirectToAction(nameof(Admin));
+            return RedirectToAction("Dashboard", "Admin", new { area = "Admin" });
         }
 
         if (User.IsInRole("Agent"))
@@ -84,13 +83,13 @@ public sealed class DashboardController(
     }
 
     [HttpGet]
-    public async Task<IActionResult> Admin(CancellationToken cancellationToken)
+    public IActionResult Admin()
     {
         if (!User.IsInRole("Admin"))
         {
             return Forbid();
         }
 
-        return View((await adminService.GetDashboardAsync(cancellationToken)).ToViewModel());
+        return RedirectToAction("Dashboard", "Admin", new { area = "Admin" });
     }
 }

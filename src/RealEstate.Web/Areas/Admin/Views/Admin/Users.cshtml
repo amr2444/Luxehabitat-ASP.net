@@ -3,25 +3,47 @@
     ViewData["Title"] = "Utilisateurs";
 }
 
-<h1 class="section-title mb-4">Utilisateurs</h1>
+<section class="admin-hub">
+    <div class="admin-hub__hero admin-hub__hero--compact">
+        <div>
+            <span class="admin-hub__eyebrow">Comptes plateforme</span>
+            <h1 class="section-title">Utilisateurs</h1>
+            <p class="admin-hub__lead">
+                Vue d'ensemble des comptes actifs ou suspendus avec lecture immediate du role de chaque profil.
+            </p>
+        </div>
+    </div>
 
-<div class="table-shell">
-    <table class="table align-middle">
-        <thead>
-            <tr><th>Nom</th><th>Email</th><th>Actif</th><th>Roles</th></tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.DisplayName</td>
-                    <td>@item.Email</td>
-                    <td>
-                        <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = item.IsActive ? "Actif" : "Suspendu", Tone = item.IsActive ? "published" : "archived" }' />
-                    </td>
-                    <td>@(item.IsAgent ? "Agent " : string.Empty)@(item.IsTenant ? "Locataire" : string.Empty)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+    <section class="admin-panel">
+        @if (Model.Any())
+        {
+            <div class="table-shell admin-table-shell">
+                <table class="table align-middle admin-table">
+                    <thead>
+                        <tr><th>Nom</th><th>Email</th><th>Actif</th><th>Roles</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="admin-table__primary">@item.DisplayName</div>
+                                    <div class="admin-table__secondary">Compte plateforme</div>
+                                </td>
+                                <td class="admin-table__muted">@item.Email</td>
+                                <td>
+                                    <partial name="_StatusBadge" model='new RealEstate.Web.ViewModels.Shared.StatusBadgeViewModel { Text = item.IsActive ? "Actif" : "Suspendu", Tone = item.IsActive ? "published" : "archived" }' />
+                                </td>
+                                <td class="admin-table__muted">@(item.IsAgent ? "Agent " : string.Empty)@(item.IsTenant ? "Locataire" : string.Empty)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <partial name="_EmptyState" model='new RealEstate.Web.ViewModels.Shared.EmptyStateViewModel { Title = "Aucun utilisateur", Message = "Les comptes de la plateforme apparaitront ici." }' />
+        }
+    </section>
+</section>
