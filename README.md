@@ -238,8 +238,8 @@ ApplicationUser (Identity)
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/LuxeHabitat.git
-cd LuxeHabitat
+git clone https://github.com/amr2444/Luxehabitat-ASP.net.git
+cd Luxehabitat-ASP.net
 ```
 
 ### 2. Configure the connection string
@@ -381,14 +381,6 @@ Please follow the existing code style — Clean Architecture layers, service int
 
 ---
 
-## ✦ License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
-<br/>
-
----
-
 <div align="center">
 
 **Built with precision. Designed with intent.**
@@ -397,7 +389,11 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 <br/>
 
-[![GitHub stars](https://img.shields.io/github/stars/YOUR_USERNAME/LuxeHabitat?style=social)](https://github.com/YOUR_USERNAME/LuxeHabitat)
-[![GitHub forks](https://img.shields.io/github/forks/YOUR_USERNAME/LuxeHabitat?style=social)](https://github.com/YOUR_USERNAME/LuxeHabitat/fork)
+[Repository](https://github.com/amr2444/Luxehabitat-ASP.net) • [GitHub Profile](https://github.com/amr2444)
+
+<br/>
+
+[![GitHub stars](https://img.shields.io/github/stars/amr2444/Luxehabitat-ASP.net?style=social)](https://github.com/amr2444/Luxehabitat-ASP.net)
+[![GitHub forks](https://img.shields.io/github/forks/amr2444/Luxehabitat-ASP.net?style=social)](https://github.com/amr2444/Luxehabitat-ASP.net/fork)
 
 </div>
